@@ -175,7 +175,7 @@ export function BankPaymentExport({ entries, periodLabel, open, onOpenChange }: 
         loan: entry.loanDeduction || 0,
         advance: entry.advanceDeduction || 0,
         otherDed: entry.otherDeductions || 0,
-        net: entry.netSalary || 0,
+        net: getTransferAmount(entry),
         bonus: entry.monthlyBonus || 0,
         total: getTransferAmount(entry),
         bank: entry.employee?.bankName || '',
@@ -205,6 +205,7 @@ export function BankPaymentExport({ entries, periodLabel, open, onOpenChange }: 
     // ── Totals row ──
     const sumCol = (key: string) => bankableEntries.reduce((s, e: any) => {
       if (key === 'overtime') return s + (e.overtimeNormal || 0) + (e.overtimeNight || 0) + (e.overtimeHoliday || 0);
+      if (key === 'netSalary') return s + getTransferAmount(e);
       if (key === 'total') return s + getTransferAmount(e);
       return s + (e[key] || 0);
     }, 0);
