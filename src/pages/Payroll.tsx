@@ -267,7 +267,7 @@ const Payroll = () => {
   const totals = regularEntries.reduce((acc, e) => ({
     gross: acc.gross + e.grossSalary,
     deductions: acc.deductions + e.totalDeductions,
-    net: acc.net + (e.paidEarly ? 0 : e.netSalary),
+    net: acc.net + (e.paidEarly ? 0 : (e.netSalary || 0) + (e.monthlyBonus || 0)),
     bonus: acc.bonus + (e.monthlyBonus || 0),
   }), { gross: 0, deductions: 0, net: 0, bonus: 0 });
 
@@ -766,7 +766,7 @@ const Payroll = () => {
         const displayTotals = displayEntries.reduce((acc, e) => ({
           gross: acc.gross + e.grossSalary,
           deductions: acc.deductions + e.totalDeductions,
-          net: acc.net + (e.paidEarly ? 0 : e.netSalary),
+          net: acc.net + (e.paidEarly ? 0 : (e.netSalary || 0) + (e.monthlyBonus || 0)),
           bonus: acc.bonus + (e.monthlyBonus || 0),
         }), { gross: 0, deductions: 0, net: 0, bonus: 0 });
         
