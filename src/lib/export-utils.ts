@@ -14,9 +14,10 @@ export function exportPayrollToCSV(
   language: string = 'pt'
 ): void {
   const isPt = language === 'pt';
+  const getPayoutAmount = (entry: PayrollEntry) => entry.paidEarly ? 0 : (entry.netSalary || 0) + (entry.monthlyBonus || 0);
   const headers = isPt
-    ? ['Funcionário', 'Nº Bilhete (BI)', 'Departamento', 'Salário Base', 'Subsídios', 'Bruto', 'IRT', 'INSS', 'Outros Descontos', 'Líquido']
-    : ['Employee', 'ID Number (BI)', 'Department', 'Base Salary', 'Allowances', 'Gross', 'IRT', 'INSS', 'Other Deductions', 'Net'];
+    ? ['Funcionário', 'Nº Bilhete (BI)', 'Departamento', 'Salário Base', 'Subsídios', 'Bónus', 'Bruto', 'IRT', 'INSS', 'Outros Descontos', 'Total a Receber']
+    : ['Employee', 'ID Number (BI)', 'Department', 'Base Salary', 'Allowances', 'Bonus', 'Gross', 'IRT', 'INSS', 'Other Deductions', 'Total to Receive'];
 
   const rows = entries.map(entry => [
     `${entry.employee?.firstName} ${entry.employee?.lastName}`,
@@ -24,11 +25,12 @@ export function exportPayrollToCSV(
     entry.employee?.department || '',
     entry.baseSalary,
     entry.mealAllowance + entry.transportAllowance + entry.otherAllowances,
+    entry.monthlyBonus || 0,
     entry.grossSalary,
     entry.irt,
     entry.inssEmployee,
     entry.otherDeductions,
-    entry.netSalary,
+    getPayoutAmount(entry),
   ]);
 
   // Calculate totals
@@ -36,13 +38,14 @@ export function exportPayrollToCSV(
     (acc, e) => ({
       base: acc.base + e.baseSalary,
       allowances: acc.allowances + e.mealAllowance + e.transportAllowance + e.otherAllowances,
+      bonus: acc.bonus + (e.monthlyBonus || 0),
       gross: acc.gross + e.grossSalary,
       irt: acc.irt + e.irt,
       inss: acc.inss + e.inssEmployee,
       other: acc.other + e.otherDeductions,
-      net: acc.net + e.netSalary,
+      net: acc.net + getPayoutAmount(e),
     }),
-    { base: 0, allowances: 0, gross: 0, irt: 0, inss: 0, other: 0, net: 0 }
+    { base: 0, allowances: 0, bonus: 0, gross: 0, irt: 0, inss: 0, other: 0, net: 0 }
   );
 
   rows.push([
@@ -51,6 +54,7 @@ export function exportPayrollToCSV(
     '',
     totals.base,
     totals.allowances,
+    totals.bonus,
     totals.gross,
     totals.irt,
     totals.inss,
