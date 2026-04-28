@@ -85,7 +85,7 @@ export function PrintablePayrollSheet({
     absenceDeduction: acc.absenceDeduction + (e.absenceDeduction || 0),
     otherDeductions: acc.otherDeductions + (e.otherDeductions || 0),
     totalDeductions: acc.totalDeductions + e.totalDeductions,
-    netSalary: acc.netSalary + (e.paidEarly ? 0 : e.netSalary),
+    netSalary: acc.netSalary + (e.paidEarly ? 0 : (e.netSalary || 0) + (e.monthlyBonus || 0)),
     inssEmployer: acc.inssEmployer + e.inssEmployer,
     daysAbsent: acc.daysAbsent + (e.daysAbsent || 0),
   }), {
