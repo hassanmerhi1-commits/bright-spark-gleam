@@ -21,6 +21,24 @@ interface SalaryReceiptProps {
   onClose?: () => void;
 }
 
+function getSavedHolidaySubsidy(entry: PayrollEntry): number {
+  const savedEntry = entry as PayrollEntry & {
+    subsidy_ferias?: number;
+    subsidyFerias?: number;
+    holiday_subsidy?: number;
+    holidaySubsidyValue?: number;
+  };
+
+  return Number(
+    savedEntry.holidaySubsidy ??
+    savedEntry.subsidy_ferias ??
+    savedEntry.subsidyFerias ??
+    savedEntry.holiday_subsidy ??
+    savedEntry.holidaySubsidyValue ??
+    0
+  );
+}
+
 export function SalaryReceipt({
   entry,
   employee,
@@ -34,6 +52,7 @@ export function SalaryReceipt({
   const printRef = useRef<HTMLDivElement>(null);
   const companyLogo = useCompanyLogo();
   const logoBase64 = companyLogo || '';
+  const savedHolidaySubsidy = getSavedHolidaySubsidy(entry);
 
   const handlePrint = async () => {
     const printContent = printRef.current;
@@ -295,10 +314,10 @@ export function SalaryReceipt({
                     <span className="amount text-xs font-mono">{formatAOA(overtimeTotal)}</span>
                   </div>
                 )}
-                {entry.holidaySubsidy > 0 && (
+                {savedHolidaySubsidy > 0 && (
                   <div className="line-item flex justify-between py-1 border-b border-dashed border-border/50">
                     <span className="label text-xs">{labels.holidaySubsidy}</span>
-                    <span className="amount text-xs font-mono">{formatAOA(entry.holidaySubsidy)}</span>
+                    <span className="amount text-xs font-mono">{formatAOA(savedHolidaySubsidy)}</span>
                   </div>
                 )}
                 {entry.thirteenthMonth > 0 && (
