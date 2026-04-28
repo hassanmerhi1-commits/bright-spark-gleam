@@ -49,7 +49,7 @@ export function PrintablePayrollSheet({
     absenceDeduction: language === 'pt' ? 'Desc. Faltas' : 'Absence Ded.',
     otherDeductions: language === 'pt' ? 'Outros Desc.' : 'Other Ded.',
     totalDeductions: language === 'pt' ? 'Total Descontos' : 'Total Deductions',
-    netSalary: language === 'pt' ? 'Salário Líquido' : 'Net Salary',
+    netSalary: language === 'pt' ? 'Total a Receber' : 'Total to Receive',
     inssEmployer: language === 'pt' ? 'INSS Patronal' : 'INSS Employer',
     signature: language === 'pt' ? 'Assinatura' : 'Signature',
     totals: language === 'pt' ? 'TOTAIS' : 'TOTALS',
